@@ -1,0 +1,28 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "15672:15672"  # Porta para acessar o RabbitMQ Management UI
+      - "5672:5672"    # Porta para comunicação AMQP
+    networks:
+      - app-network
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_VHOST: /novo_vhost
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_logs:/var/log/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_logs:
+
+networks:
+  app-network:
+    driver: bridge
